@@ -1,0 +1,47 @@
+/*
+! Swiper
+*/
+.swiper.is-hp-galery .swiper-wrapper {
+  transition-timing-function: linear !important;
+}
+
+/*
+! Button icon hover effect
+*/
+a[href]:hover div[svg='component'] {
+  transform: translateX(0.5rem);
+  transition: transform 0.3s ease-in-out;
+}
+
+a[href] div[svg='component'] {
+  transition: transform 0.3s ease-in-out;
+}
+
+/*
+! Logo mobile partners
+*/
+.logo-mobile-partners {
+  display: none;
+}
+
+@media screen and (width >= 768px) {
+  .logo-mobile-partners {
+    display: block;
+  }
+  .logo-desktop-partners {
+    display: none;
+  }
+}
+
+.section_gallery .gallery_content {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 6rem !important;
+  transition:
+    grid-template-columns 0.6s ease,
+    gap 0.6s ease !important;
+}
+
+.section_gallery .gallery-item.w-dyn-item {
+  overflow: hidden !important;
+}
