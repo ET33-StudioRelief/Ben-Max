@@ -32,29 +32,20 @@ a[href] div[svg='component'] {
     display: none;
   }
 }
-.section_gallery .gallery_flex {
-  flex-wrap: wrap;
-}
 
-.section_gallery .gallery_item {
-  box-sizing: border-box;
-  flex: 0 0 calc((100% - 3 * 6rem) / 4); /* 4 colonnes + 3 gaps */
-  max-width: calc((100% - 3 * 6rem) / 4);
-}
-
-.test_wrapper {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: 6rem;
-}
-
-.test_wrapper .test_item {
+.gallery_grid .gallery_item {
   box-sizing: border-box;
   --aspect-ratio: 1 / 1;
   aspect-ratio: var(--aspect-ratio);
   transition: aspect-ratio 0.5s ease-in-out;
 }
 
-.test_wrapper .test_item.active {
+.gallery_grid .gallery_item.active {
   --aspect-ratio: 300 / 375;
+}
+
+.gallery_grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6rem;
 }
