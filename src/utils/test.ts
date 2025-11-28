@@ -104,6 +104,22 @@ export function initTestItemClick(): void {
   // Cette fonction collecte tous les items et les réorganise automatiquement
   organizeItemsIntoWrappers(container, 4);
 
+  // Trouver l'élément gallery_content pour l'animation d'apparition
+  const galleryContent = document.querySelector<HTMLElement>('.gallery_content');
+  if (galleryContent) {
+    // Initialiser l'opacité à 0
+    gsap.set(galleryContent, {
+      opacity: 0,
+    });
+
+    // Animer l'apparition de gallery_content
+    gsap.to(galleryContent, {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'ease-out',
+    });
+  }
+
   // Attendre un peu pour que le DOM soit mis à jour
   requestAnimationFrame(() => {
     const testWrappers = document.querySelectorAll<HTMLElement>('.gallery_grid');
@@ -155,6 +171,12 @@ export function initTestItemClick(): void {
       // S'assurer que grid-template-columns est initialisé
       gsap.set(wrapper, {
         gridTemplateColumns: defaultColumns,
+      });
+
+      // Initialiser la hauteur fixe pour tous les items
+      const defaultHeight = '17rem';
+      items.forEach((it) => {
+        it.style.height = defaultHeight;
       });
 
       // Animation d'apparition avec clip-path pour chaque item
@@ -225,15 +247,44 @@ export function initTestItemClick(): void {
 
       let selectedIndex: number | null = null;
 
+      // Fonction pour mettre height: auto sur tous les items (ignore la hauteur fixe)
+      const setAutoHeight = (): void => {
+        items.forEach((it) => {
+          it.style.height = 'auto';
+        });
+      };
+
       items.forEach((item, index) => {
         item.addEventListener('click', () => {
           // Si on reclique sur l'item déjà sélectionné, on reset
           if (selectedIndex === index) {
-            gsap.to(wrapper, {
+            // Mettre height: auto pour ignorer la hauteur fixe lors du scaleDown
+            setAutoHeight();
+
+            // Créer une timeline pour synchroniser les animations
+            const tl = gsap.timeline();
+
+            // Animer le grid-template-columns
+            tl.to(wrapper, {
               gridTemplateColumns: defaultColumns,
               duration: animationConfig.duration,
               ease: animationConfig.ease,
             });
+
+            // Animer la restauration de la hauteur fixe en parallèle,
+            // en commençant vers la fin de l'animation du grid pour une transition fluide
+            items.forEach((it) => {
+              tl.to(
+                it,
+                {
+                  height: defaultHeight,
+                  duration: animationConfig.duration * 0.8,
+                  ease: animationConfig.ease,
+                },
+                '-=0.3' // Commence 0.3s avant la fin de l'animation du grid
+              );
+            });
+
             items.forEach((it) => it.classList.remove('active'));
             selectedIndex = null;
             return;
@@ -241,6 +292,9 @@ export function initTestItemClick(): void {
 
           // Retirer la classe active de tous les items
           items.forEach((it) => it.classList.remove('active'));
+
+          // Mettre height: auto pour ignorer la hauteur fixe lors du scaleUp
+          setAutoHeight();
 
           // Construire la nouvelle configuration de grid-template-columns
           const columns: string[] = [];
