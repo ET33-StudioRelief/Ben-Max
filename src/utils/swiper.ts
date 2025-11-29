@@ -33,6 +33,6 @@ export function initHpGallerySwiper() {
       disableOnInteraction: true,
       pauseOnMouseEnter: true, // Pause automatique au survol
     },
-    speed: 1000,
+    speed: 5000,
   });
 }

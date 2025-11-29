@@ -1,3 +1,8 @@
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
 export function svgComponent(): void {
   document.querySelectorAll('[svg="component"]').forEach((element) => {
     const svgCode = element.textContent;
@@ -49,4 +54,34 @@ export function initNavbarScroll(): void {
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
+}
+
+/**
+ * Anime footer-logo avec un effet "move up" quand footer_component entre dans le viewport
+ */
+export function initFooterLogoAnimation(): void {
+  const footerComponent = document.querySelector<HTMLElement>('.footer_component');
+  const footerLogo = document.getElementById('footer-logo');
+
+  if (!footerComponent || !footerLogo) {
+    return;
+  }
+
+  // Initialiser la position en bas
+  gsap.set(footerLogo, { y: 50 });
+
+  // Créer l'animation avec ScrollTrigger
+  ScrollTrigger.create({
+    trigger: footerComponent,
+    start: 'top 80%',
+    onEnter: () => {
+      gsap.to(footerLogo, { y: 0, duration: 0.8, ease: 'power2.out' });
+    },
+    onEnterBack: () => {
+      gsap.to(footerLogo, { y: 0, duration: 0.8, ease: 'power2.out' });
+    },
+    onLeaveBack: () => {
+      gsap.set(footerLogo, { y: 50 });
+    },
+  });
 }
