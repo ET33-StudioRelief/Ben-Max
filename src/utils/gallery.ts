@@ -89,6 +89,35 @@ function organizeItemsIntoWrappers(container: HTMLElement, itemsPerRow: number =
 }
 
 /**
+ * Calcule le nombre d'items par ligne et le gap selon la largeur de l'écran
+ * @returns { itemsPerRow: number, gap: string }
+ */
+function getResponsiveConfig(): { itemsPerRow: number; gap: string } {
+  const width = window.innerWidth;
+
+  if (width >= 1300) {
+    // Desktop : 4 items par ligne (défaut)
+    return { itemsPerRow: 4, gap: '6rem' };
+  }
+  if (width >= 768) {
+    // Tablette : 3 items par ligne avec gap de 2rem
+    return { itemsPerRow: 3, gap: '2rem' };
+  }
+  // Mobile : 2 items par ligne avec gap de 1rem
+  return { itemsPerRow: 2, gap: '1rem' };
+}
+
+/**
+ * Applique le gap aux wrappers de la gallery
+ */
+function applyGapToWrappers(gap: string): void {
+  const wrappers = document.querySelectorAll<HTMLElement>('.gallery_grid');
+  wrappers.forEach((wrapper) => {
+    wrapper.style.gap = gap;
+  });
+}
+
+/**
  * Initialise l'interaction au clic sur les éléments gallery_item
  * Au clic, modifie grid-template-columns pour agrandir l'item cliqué
  * et rétrécir les autres
@@ -100,9 +129,14 @@ export function initTestItemClick(): void {
     document.querySelector<HTMLElement>('.section_gallery') ||
     document.body;
 
-  // Organiser automatiquement les items en wrappers de 4
-  // Cette fonction collecte tous les items et les réorganise automatiquement
-  organizeItemsIntoWrappers(container, 4);
+  // Obtenir la configuration responsive
+  const config = getResponsiveConfig();
+
+  // Organiser automatiquement les items en wrappers selon la configuration responsive
+  organizeItemsIntoWrappers(container, config.itemsPerRow);
+
+  // Appliquer le gap
+  applyGapToWrappers(config.gap);
 
   // Trouver l'élément gallery_content pour l'animation d'apparition
   const galleryContent = document.querySelector<HTMLElement>('.gallery_content');
@@ -120,13 +154,52 @@ export function initTestItemClick(): void {
     });
   }
 
-  // Attendre un peu pour que le DOM soit mis à jour
-  requestAnimationFrame(() => {
+  // Stocker la configuration actuelle pour détecter les changements
+  let currentConfig = getResponsiveConfig();
+
+  // Fonction pour réinitialiser la gallery avec la configuration responsive
+  const reinitGallery = (): void => {
+    const responsiveConfig = getResponsiveConfig();
+    organizeItemsIntoWrappers(container, responsiveConfig.itemsPerRow);
+    applyGapToWrappers(responsiveConfig.gap);
+    currentConfig = responsiveConfig;
+
+    // Réinitialiser les interactions après réorganisation
+    setTimeout(() => {
+      initGalleryInteractions();
+    }, 100);
+  };
+
+  // Gérer le redimensionnement de la fenêtre
+  let resizeTimeout: ReturnType<typeof setTimeout>;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const newConfig = getResponsiveConfig();
+      // Réinitialiser seulement si la configuration a changé
+      if (
+        newConfig.itemsPerRow !== currentConfig.itemsPerRow ||
+        newConfig.gap !== currentConfig.gap
+      ) {
+        reinitGallery();
+      } else {
+        // Sinon, juste mettre à jour le gap au cas où
+        applyGapToWrappers(newConfig.gap);
+      }
+    }, 250);
+  });
+
+  // Fonction pour initialiser les interactions de la gallery
+  const initGalleryInteractions = (): void => {
     const testWrappers = document.querySelectorAll<HTMLElement>('.gallery_grid');
 
     if (testWrappers.length === 0) {
       return;
     }
+
+    // Appliquer le gap actuel aux wrappers
+    const config = getResponsiveConfig();
+    applyGapToWrappers(config.gap);
 
     const expandedColumn = 'minmax(0, 5fr)';
     const collapsedColumn = 'minmax(0, 0.5fr)';
@@ -322,5 +395,8 @@ export function initTestItemClick(): void {
         });
       });
     });
-  });
+  };
+
+  // Initialiser les interactions au démarrage
+  initGalleryInteractions();
 }

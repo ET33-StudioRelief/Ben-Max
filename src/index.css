@@ -49,3 +49,48 @@ a[href] div[svg='component'] {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: 6rem;
 }
+
+/*
+! Hero content responsive
+*/
+@media screen and (min-width: 992px) and (max-width: 1100px) {
+  .navbar_component {
+    min-height: 7rem;
+  }
+  .section_hero {
+    padding-top: 8rem;
+  }
+  .hero_content {
+    flex-direction: column;
+    align-items: center;
+    gap: 5rem;
+  }
+  .hero_right-col {
+    max-width: 25rem;
+  }
+  .hero_left-col {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .hero_h1 {
+    font-size: 1.48rem;
+  }
+  .about_p {
+    font-size: 2rem;
+  }
+}
+
+/*
+! Logo grid animation
+*/
+.logo_grid > * {
+  opacity: 0;
+}
+
+/*
+! About button animation
+*/
+#about-button {
+  opacity: 0;
+}

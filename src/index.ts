@@ -1,8 +1,15 @@
 import './index.css';
 
+import { initTestItemClick } from './utils/gallery';
 import { initNavbarScroll, svgComponent } from './utils/global';
+import {
+  initAboutTextAnimation,
+  initFeaturesAnimation,
+  initFeaturesTextAnimation,
+  initLogoGridAnimation,
+} from './utils/home';
+import { initContactModal } from './utils/modal';
 import { initHpGallerySwiper } from './utils/swiper';
-import { initTestItemClick } from './utils/test';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
@@ -11,4 +18,9 @@ window.Webflow.push(() => {
   initHpGallerySwiper();
   svgComponent();
   initTestItemClick();
+  initContactModal();
+  initFeaturesAnimation();
+  initLogoGridAnimation();
+  initAboutTextAnimation();
+  initFeaturesTextAnimation();
 });
