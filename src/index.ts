@@ -1,15 +1,26 @@
 import './index.css';
 
-import { cleanEmptyWebflowItems, initNavbarScroll, svgComponent } from './utils/global';
-import { initGalleryAnimation } from './utils/gsap';
+import { initTestItemClick } from './utils/gallery';
+import { initNavbarScroll, svgComponent } from './utils/global';
+import {
+  initAboutTextAnimation,
+  initFeaturesAnimation,
+  initFeaturesTextAnimation,
+  initLogoGridAnimation,
+} from './utils/home';
+import { initContactModal } from './utils/modal';
 import { initHpGallerySwiper } from './utils/swiper';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
   // Nettoyer les éléments vides de Webflow CMS sur toutes les pages
-  cleanEmptyWebflowItems();
   initNavbarScroll();
   initHpGallerySwiper();
   svgComponent();
-  initGalleryAnimation();
+  initTestItemClick();
+  initContactModal();
+  initFeaturesAnimation();
+  initLogoGridAnimation();
+  initAboutTextAnimation();
+  initFeaturesTextAnimation();
 });

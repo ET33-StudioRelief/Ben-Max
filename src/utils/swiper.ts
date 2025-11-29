@@ -29,10 +29,10 @@ export function initHpGallerySwiper() {
     spaceBetween: 23,
     loop: true,
     autoplay: {
-      delay: 1,
-      disableOnInteraction: false,
+      delay: 0,
+      disableOnInteraction: true,
       pauseOnMouseEnter: true, // Pause automatique au survol
     },
-    speed: 2000,
+    speed: 1000,
   });
 }

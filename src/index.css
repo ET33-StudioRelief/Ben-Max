@@ -33,15 +33,64 @@ a[href] div[svg='component'] {
   }
 }
 
-.section_gallery .gallery_content {
-  display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: 6rem !important;
-  transition:
-    grid-template-columns 0.6s ease,
-    gap 0.6s ease !important;
+.gallery_grid .gallery_item {
+  box-sizing: border-box;
+  --aspect-ratio: 1 / 1;
+  aspect-ratio: var(--aspect-ratio);
+  transition: aspect-ratio 0.5s ease-in-out;
 }
 
-.section_gallery .gallery-item.w-dyn-item {
-  overflow: hidden !important;
+.gallery_grid .gallery_item.active {
+  --aspect-ratio: 300 / 375;
+}
+
+.gallery_grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6rem;
+}
+
+/*
+! Hero content responsive
+*/
+@media screen and (min-width: 992px) and (max-width: 1100px) {
+  .navbar_component {
+    min-height: 7rem;
+  }
+  .section_hero {
+    padding-top: 8rem;
+  }
+  .hero_content {
+    flex-direction: column;
+    align-items: center;
+    gap: 5rem;
+  }
+  .hero_right-col {
+    max-width: 25rem;
+  }
+  .hero_left-col {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .hero_h1 {
+    font-size: 1.48rem;
+  }
+  .about_p {
+    font-size: 2rem;
+  }
+}
+
+/*
+! Logo grid animation
+*/
+.logo_grid > * {
+  opacity: 0;
+}
+
+/*
+! About button animation
+*/
+#about-button {
+  opacity: 0;
 }
