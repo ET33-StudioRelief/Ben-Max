@@ -3,6 +3,44 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * Fonction helper pour animer les features dans une timeline
+ */
+function animateFeaturesInTimeline(timeline: gsap.core.Timeline): void {
+  const featuresList = document.querySelector<HTMLElement>('.features_list-flex');
+
+  if (!featuresList) {
+    return;
+  }
+
+  // Trouver tous les enfants directs de features_list-flex
+  const featureItems = Array.from(featuresList.children) as HTMLElement[];
+
+  if (featureItems.length === 0) {
+    return;
+  }
+
+  // Initialiser l'état de départ : opacité 0
+  featureItems.forEach((item) => {
+    gsap.set(item, {
+      opacity: 0,
+    });
+  });
+
+  // Ajouter les animations à la timeline
+  featureItems.forEach((item, index) => {
+    timeline.to(
+      item,
+      {
+        opacity: 1,
+        duration: 0.6, // Durée augmentée pour une animation plus lente
+        ease: 'power2.out',
+      },
+      index * 0.15 // Délai augmenté à 0.15s entre chaque item
+    );
+  });
+}
+
 export function initFeaturesAnimation(): void {
   const featuresContent = document.querySelector<HTMLElement>('.features_content');
   const featuresList = document.querySelector<HTMLElement>('.features_list-flex');
@@ -22,7 +60,6 @@ export function initFeaturesAnimation(): void {
   featureItems.forEach((item) => {
     gsap.set(item, {
       opacity: 0,
-      y: 30, // Légère translation vers le bas
     });
   });
 
@@ -33,19 +70,7 @@ export function initFeaturesAnimation(): void {
     onEnter: () => {
       // Créer une timeline pour animer les items séquentiellement
       const tl = gsap.timeline();
-
-      featureItems.forEach((item, index) => {
-        tl.to(
-          item,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.9, // Durée augmentée pour une animation plus lente
-            ease: 'power2.out',
-          },
-          index * 0.15 // Délai augmenté à 0.15s entre chaque item
-        );
-      });
+      animateFeaturesInTimeline(tl);
     },
     once: true, // Ne s'exécute qu'une seule fois
   });
@@ -388,5 +413,153 @@ export function initMovingLettersAnimation(): void {
       },
       once: true,
     });
+  });
+}
+
+/**
+ * Anime logo-h2 avec Moving Letters, puis initFeaturesAnimation, puis fadeIn logo-btn
+ * Se déclenche quand section_logo entre dans le viewport
+ */
+export function initLogoSectionAnimation(): void {
+  const sectionLogo = document.querySelector<HTMLElement>('.section_logo');
+  const logoH2 = document.getElementById('logo-h2');
+  const logoBtn = document.getElementById('logo-btn');
+
+  if (!sectionLogo || !logoH2) {
+    return;
+  }
+
+  // Initialiser logo-btn avec opacity 0
+  if (logoBtn) {
+    gsap.set(logoBtn, {
+      opacity: 0,
+    });
+  }
+
+  // Initialiser les features avec opacity 0 dès le début
+  const featuresList = document.querySelector<HTMLElement>('.features_list-flex');
+  if (featuresList) {
+    const featureItems = Array.from(featuresList.children) as HTMLElement[];
+    featureItems.forEach((item) => {
+      gsap.set(item, {
+        opacity: 0,
+      });
+    });
+  }
+
+  // Préparer l'animation Moving Letters pour logo-h2
+  const originalText = logoH2.textContent || '';
+  if (!originalText.trim()) {
+    return;
+  }
+
+  // Diviser le texte en lettres (en gardant les espaces)
+  const letters = originalText.split('').map((char) => {
+    if (char === ' ') {
+      return '&nbsp;';
+    }
+    return char;
+  });
+
+  // Créer un wrapper pour les lettres
+  logoH2.innerHTML = '';
+  const lettersContainer = document.createElement('span');
+  lettersContainer.className = 'letters-container';
+  lettersContainer.style.display = 'inline-block';
+
+  // Créer un span pour chaque lettre
+  const letterElements: HTMLElement[] = [];
+  letters.forEach((letter) => {
+    const letterSpan = document.createElement('span');
+    letterSpan.className = 'letter';
+    letterSpan.style.display = 'inline-block';
+    letterSpan.innerHTML = letter;
+    lettersContainer.appendChild(letterSpan);
+    letterElements.push(letterSpan);
+  });
+
+  logoH2.appendChild(lettersContainer);
+
+  // Initialiser l'état de départ : lettres masquées avec translation
+  letterElements.forEach((letter) => {
+    gsap.set(letter, {
+      opacity: 0,
+      y: 100, // Translation vers le bas
+      rotationX: -90, // Rotation pour l'effet 3D
+    });
+  });
+
+  // Créer une animation avec ScrollTrigger
+  ScrollTrigger.create({
+    trigger: sectionLogo,
+    start: 'top 80%',
+    onEnter: () => {
+      // Timeline principale pour toute la séquence
+      const mainTl = gsap.timeline();
+
+      // 1. Animation Moving Letters sur logo-h2
+      letterElements.forEach((letter, index) => {
+        mainTl.to(
+          letter,
+          {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            duration: 0.4,
+            ease: 'back.out(1.7)',
+          },
+          index * 0.03
+        );
+      });
+
+      // Calculer la durée totale de l'animation du h2
+      const h2Duration = letterElements.length * 0.03 + 0.4;
+
+      // 2. Animation des features (après l'animation du h2)
+      if (featuresList) {
+        const featureItems = Array.from(featuresList.children) as HTMLElement[];
+
+        // Ajouter les animations à la timeline après l'animation du h2
+        featureItems.forEach((item, index) => {
+          mainTl.to(
+            item,
+            {
+              opacity: 1,
+              duration: 0.6,
+              ease: 'power2.out',
+            },
+            h2Duration + index * 0.15 // Commencer après l'animation du h2
+          );
+        });
+
+        // Calculer la durée totale de l'animation des features
+        const featuresDuration = featureItems.length * 0.15 + 0.6;
+
+        // 3. FadeIn du bouton logo-btn (pendant l'animation des features pour un enchaînement plus rapide)
+        if (logoBtn) {
+          mainTl.to(
+            logoBtn,
+            {
+              opacity: 1,
+              duration: 0.3, // Durée réduite pour une apparition plus rapide
+              ease: 'power2.out',
+            },
+            h2Duration + featuresDuration - 1.5 // Commence beaucoup plus tôt pendant l'animation des features
+          );
+        }
+      } else if (logoBtn) {
+        // Si pas de features, afficher le bouton pendant l'animation du h2
+        mainTl.to(
+          logoBtn,
+          {
+            opacity: 1,
+            duration: 0.5, // Durée réduite pour une apparition plus rapide
+            ease: 'power2.out',
+          },
+          h2Duration - 0.5 // Commence pendant l'animation du h2
+        );
+      }
+    },
+    once: true,
   });
 }

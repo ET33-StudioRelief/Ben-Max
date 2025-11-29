@@ -94,3 +94,10 @@ a[href] div[svg='component'] {
 #about-button {
   opacity: 0;
 }
+
+/*
+! Logo button animation
+*/
+#logo-btn {
+  opacity: 0;
+}
