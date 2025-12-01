@@ -59,6 +59,7 @@ a[href] div[svg='component'] {
   }
   .section_hero {
     padding-top: 8rem;
+    height: auto;
   }
   .hero_content {
     flex-direction: column;

@@ -12,11 +12,6 @@ export function svgComponent(): void {
   });
 }
 
-/**
- * Gère le comportement de la navbar au scroll
- * La navbar se déplace vers le haut de 5rem au scroll down
- * et reprend sa position initiale au scroll up
- */
 export function initNavbarScroll(): void {
   const navbar = document.querySelector<HTMLElement>('.navbar_component');
 
@@ -56,9 +51,6 @@ export function initNavbarScroll(): void {
   window.addEventListener('scroll', handleScroll, { passive: true });
 }
 
-/**
- * Anime footer-logo avec un effet "move up" quand footer_component entre dans le viewport
- */
 export function initFooterLogoAnimation(): void {
   const footerComponent = document.querySelector<HTMLElement>('.footer_component');
   const footerLogo = document.getElementById('footer-logo');
@@ -68,12 +60,12 @@ export function initFooterLogoAnimation(): void {
   }
 
   // Initialiser la position en bas
-  gsap.set(footerLogo, { y: 50 });
+  gsap.set(footerLogo, { y: 202 });
 
   // Créer l'animation avec ScrollTrigger
   ScrollTrigger.create({
     trigger: footerComponent,
-    start: 'top 80%',
+    start: 'top 15%',
     onEnter: () => {
       gsap.to(footerLogo, { y: 0, duration: 0.8, ease: 'power2.out' });
     },
