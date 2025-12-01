@@ -115,8 +115,6 @@ function applyGapToWrappers(gap: string): void {
   wrappers.forEach((wrapper) => {
     // gap between items inside a wrapper
     wrapper.style.gap = gap;
-    // vertical spacing between wrapper rows (between .gallery_grid)
-    wrapper.style.marginBottom = gap;
   });
 }
 

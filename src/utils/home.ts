@@ -168,35 +168,11 @@ export function initFeaturesSectionAnimation(): void {
     return;
   }
 
-  // Prepare heading text for "moving letters" animation
-  const headingText = featuresHeading.textContent || '';
-  if (!headingText.trim()) {
+  // Prepare heading text for "moving letters" animation without breaking words across lines
+  const headingLetterElements = prepareHeadingLetters(featuresHeading);
+  if (headingLetterElements.length === 0) {
     return;
   }
-
-  const letters = headingText.split('').map((char) => {
-    if (char === ' ') {
-      return '&nbsp;';
-    }
-    return char;
-  });
-
-  featuresHeading.innerHTML = '';
-  const lettersContainer = document.createElement('span');
-  lettersContainer.className = 'letters-container';
-  lettersContainer.style.display = 'inline-block';
-
-  const headingLetterElements: HTMLElement[] = [];
-  letters.forEach((letter) => {
-    const letterSpan = document.createElement('span');
-    letterSpan.className = 'letter';
-    letterSpan.style.display = 'inline-block';
-    letterSpan.innerHTML = letter;
-    lettersContainer.appendChild(letterSpan);
-    headingLetterElements.push(letterSpan);
-  });
-
-  featuresHeading.appendChild(lettersContainer);
 
   // Initial heading state
   headingLetterElements.forEach((letter) => {
@@ -285,10 +261,12 @@ export function initFeaturesSectionAnimation(): void {
   });
 }
 
-//clip path text lines
+// Splits block text into lines and wraps each line in a div with a clip-path for line-by-line reveal.
 function prepareTextLines(element: HTMLElement): HTMLElement[] {
-  // Sauvegarder le texte original et les styles
-  const originalText = element.textContent || '';
+  // Use innerText so we get the same visible spaces/line breaks as the browser renders,
+  // then normalise all whitespace (spaces, newlines, tabs, etc.) to a single space.
+  const originalText = (element as HTMLElement).innerText || '';
+  const normalizedText = originalText.replace(/\s+/g, ' ').trim();
   const computedStyle = window.getComputedStyle(element);
   const textWidth = element.offsetWidth;
 
@@ -304,8 +282,8 @@ function prepareTextLines(element: HTMLElement): HTMLElement[] {
   tempDiv.style.letterSpacing = computedStyle.letterSpacing;
   document.body.appendChild(tempDiv);
 
-  // Diviser le texte en lignes
-  const words = originalText.split(' ');
+  // Diviser le texte normalisé en "mots" pour construire les lignes
+  const words = normalizedText.length ? normalizedText.split(' ') : [];
   const lines: string[] = [];
   let currentLine = '';
 
@@ -361,6 +339,52 @@ function prepareTextLines(element: HTMLElement): HTMLElement[] {
   });
 
   return lineElements;
+}
+
+// Splits a heading into word-wrapped animated letter spans so letters of a word never wrap onto a new line.
+function prepareHeadingLetters(element: HTMLElement): HTMLElement[] {
+  const originalText = element.textContent || '';
+  const trimmed = originalText.trim();
+
+  if (!trimmed) {
+    return [];
+  }
+
+  // Clear existing content
+  element.innerHTML = '';
+
+  const lettersContainer = document.createElement('span');
+  lettersContainer.className = 'letters-container';
+  lettersContainer.style.display = 'inline-block';
+
+  const letterElements: HTMLElement[] = [];
+  const words = trimmed.split(/\s+/);
+
+  words.forEach((word, wordIndex) => {
+    const wordSpan = document.createElement('span');
+    wordSpan.className = 'letters-word';
+    wordSpan.style.display = 'inline-block';
+    if (wordIndex < words.length - 1) {
+      // Maintain space between words
+      wordSpan.style.marginRight = '0.25em';
+    }
+
+    for (let i = 0; i < word.length; i += 1) {
+      const char = word[i];
+      const letterSpan = document.createElement('span');
+      letterSpan.className = 'letter';
+      letterSpan.style.display = 'inline-block';
+      letterSpan.textContent = char;
+      wordSpan.appendChild(letterSpan);
+      letterElements.push(letterSpan);
+    }
+
+    lettersContainer.appendChild(wordSpan);
+  });
+
+  element.appendChild(lettersContainer);
+
+  return letterElements;
 }
 
 // Reveals the about paragraph line by line and then fades in the about button.
@@ -464,38 +488,10 @@ export function initMovingLettersAnimation(): void {
   }
 
   headings.forEach((heading) => {
-    // Sauvegarder le texte original
-    const originalText = heading.textContent || '';
-    if (!originalText.trim()) {
+    const letterElements = prepareHeadingLetters(heading);
+    if (letterElements.length === 0) {
       return;
     }
-
-    // Diviser le texte en lettres (en gardant les espaces)
-    const letters = originalText.split('').map((char) => {
-      if (char === ' ') {
-        return '&nbsp;';
-      }
-      return char;
-    });
-
-    // Créer un wrapper pour les lettres
-    heading.innerHTML = '';
-    const lettersContainer = document.createElement('span');
-    lettersContainer.className = 'letters-container';
-    lettersContainer.style.display = 'inline-block';
-
-    // Créer un span pour chaque lettre
-    const letterElements: HTMLElement[] = [];
-    letters.forEach((letter) => {
-      const letterSpan = document.createElement('span');
-      letterSpan.className = 'letter';
-      letterSpan.style.display = 'inline-block';
-      letterSpan.innerHTML = letter;
-      lettersContainer.appendChild(letterSpan);
-      letterElements.push(letterSpan);
-    });
-
-    heading.appendChild(lettersContainer);
 
     // Initialiser l'état de départ : lettres masquées avec translation
     letterElements.forEach((letter) => {
@@ -560,38 +556,11 @@ export function initLogoSectionAnimation(): void {
     });
   }
 
-  // Préparer l'animation Moving Letters pour logo-h2
-  const originalText = logoH2.textContent || '';
-  if (!originalText.trim()) {
+  // Prepare "moving letters" for logo-h2 without breaking words across lines
+  const letterElements = prepareHeadingLetters(logoH2);
+  if (letterElements.length === 0) {
     return;
   }
-
-  // Diviser le texte en lettres (en gardant les espaces)
-  const letters = originalText.split('').map((char) => {
-    if (char === ' ') {
-      return '&nbsp;';
-    }
-    return char;
-  });
-
-  // Créer un wrapper pour les lettres
-  logoH2.innerHTML = '';
-  const lettersContainer = document.createElement('span');
-  lettersContainer.className = 'letters-container';
-  lettersContainer.style.display = 'inline-block';
-
-  // Créer un span pour chaque lettre
-  const letterElements: HTMLElement[] = [];
-  letters.forEach((letter) => {
-    const letterSpan = document.createElement('span');
-    letterSpan.className = 'letter';
-    letterSpan.style.display = 'inline-block';
-    letterSpan.innerHTML = letter;
-    lettersContainer.appendChild(letterSpan);
-    letterElements.push(letterSpan);
-  });
-
-  logoH2.appendChild(lettersContainer);
 
   // Initialiser l'état de départ : lettres masquées avec translation
   letterElements.forEach((letter) => {
@@ -686,37 +655,10 @@ export function initHpGalleryHeadingAnimation(): void {
     return;
   }
 
-  const originalText = hpGalleryHeading.textContent || '';
-  if (!originalText.trim()) {
+  const letterElements = prepareHeadingLetters(hpGalleryHeading);
+  if (letterElements.length === 0) {
     return;
   }
-
-  // Diviser le texte en lettres (en gardant les espaces)
-  const letters = originalText.split('').map((char) => {
-    if (char === ' ') {
-      return '&nbsp;';
-    }
-    return char;
-  });
-
-  // Créer un wrapper pour les lettres
-  hpGalleryHeading.innerHTML = '';
-  const lettersContainer = document.createElement('span');
-  lettersContainer.className = 'letters-container';
-  lettersContainer.style.display = 'inline-block';
-
-  // Créer un span pour chaque lettre
-  const letterElements: HTMLElement[] = [];
-  letters.forEach((letter) => {
-    const letterSpan = document.createElement('span');
-    letterSpan.className = 'letter';
-    letterSpan.style.display = 'inline-block';
-    letterSpan.innerHTML = letter;
-    lettersContainer.appendChild(letterSpan);
-    letterElements.push(letterSpan);
-  });
-
-  hpGalleryHeading.appendChild(lettersContainer);
 
   // État de départ : lettres masquées avec translation
   letterElements.forEach((letter) => {
@@ -765,10 +707,6 @@ export function initLandscapeImageMaskAnimation(): void {
   if (!wrapper) {
     return;
   }
-
-  // Debug: confirm elements found
-  // eslint-disable-next-line no-console
-  console.log('[LandscapeMask] init with image:', landscapeImg.id, 'wrapper:', wrapper.className);
 
   // Ensure wrapper can host overlay masks
   if (!wrapper.style.position) {
@@ -838,10 +776,6 @@ export function initLandscapeImageMaskAnimation(): void {
 
   const masks = Array.from(wrapper.querySelectorAll<HTMLElement>('.landscape-mask'));
 
-  // Debug: number of masks created
-  // eslint-disable-next-line no-console
-  console.log('[LandscapeMask] masks created:', masks.length);
-
   // Set initial clipPath for each mask
   masks.forEach((mask, index) => {
     gsap.set(mask, {
@@ -862,8 +796,6 @@ export function initLandscapeImageMaskAnimation(): void {
     trigger: sectionLandscape,
     start: 'top 40%',
     onEnter: () => {
-      // eslint-disable-next-line no-console
-      console.log('[LandscapeMask] ScrollTrigger onEnter');
       const tl = gsap.timeline();
 
       animationOrder.forEach((targets, groupIndex) => {
