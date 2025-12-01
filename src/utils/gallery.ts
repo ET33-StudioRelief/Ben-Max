@@ -113,7 +113,10 @@ function getResponsiveConfig(): { itemsPerRow: number; gap: string } {
 function applyGapToWrappers(gap: string): void {
   const wrappers = document.querySelectorAll<HTMLElement>('.gallery_grid');
   wrappers.forEach((wrapper) => {
+    // gap between items inside a wrapper
     wrapper.style.gap = gap;
+    // vertical spacing between wrapper rows (between .gallery_grid)
+    wrapper.style.marginBottom = gap;
   });
 }
 

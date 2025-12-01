@@ -4,8 +4,10 @@ import { initTestItemClick } from './utils/gallery';
 import { initFooterLogoAnimation, initNavbarScroll, svgComponent } from './utils/global';
 import {
   initAboutTextAnimation,
-  initFeaturesAnimation,
+  initFeaturesSectionAnimation,
   initFeaturesTextAnimation,
+  initHpGalleryHeadingAnimation,
+  initLandscapeImageMaskAnimation,
   initLogoGridAnimation,
   initLogoSectionAnimation,
 } from './utils/home';
@@ -20,8 +22,10 @@ window.Webflow.push(() => {
   initTestItemClick();
   initContactModal();
   initLogoSectionAnimation();
-  initFeaturesAnimation();
+  initHpGalleryHeadingAnimation();
+  initFeaturesSectionAnimation();
   initLogoGridAnimation();
+  initLandscapeImageMaskAnimation();
   initAboutTextAnimation();
   initFeaturesTextAnimation();
   initFooterLogoAnimation();
