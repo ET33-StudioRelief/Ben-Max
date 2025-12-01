@@ -41,6 +41,7 @@ function animateFeaturesInTimeline(timeline: gsap.core.Timeline): void {
   });
 }
 
+// Animates the features list items when the features section enters the viewport.
 export function initFeaturesAnimation(): void {
   const featuresContent = document.querySelector<HTMLElement>('.features_content');
   const featuresList = document.querySelector<HTMLElement>('.features_list-flex');
@@ -76,6 +77,7 @@ export function initFeaturesAnimation(): void {
   });
 }
 
+// Animates the logo grid items row by row when the logo section enters the viewport.
 export function initLogoGridAnimation(): void {
   const sectionLogo = document.querySelector<HTMLElement>('.section_logo');
   const logoGrid = document.querySelector<HTMLElement>('.logo_grid');
@@ -155,10 +157,135 @@ export function initLogoGridAnimation(): void {
   });
 }
 
-/**
- * Fonction réutilisable pour préparer un texte en lignes avec clip-path
- * Retourne les éléments de ligne créés
- */
+// Animates the features section: heading letters, intro text, then feature items.
+export function initFeaturesSectionAnimation(): void {
+  const sectionFeatures = document.querySelector<HTMLElement>('.section_features');
+  const featuresHeading = document.getElementById('features-heading');
+  const featuresText = document.getElementById('features-txt');
+  const featuresList = document.querySelector<HTMLElement>('.features_list-flex');
+
+  if (!sectionFeatures || !featuresHeading) {
+    return;
+  }
+
+  // Prepare heading text for "moving letters" animation
+  const headingText = featuresHeading.textContent || '';
+  if (!headingText.trim()) {
+    return;
+  }
+
+  const letters = headingText.split('').map((char) => {
+    if (char === ' ') {
+      return '&nbsp;';
+    }
+    return char;
+  });
+
+  featuresHeading.innerHTML = '';
+  const lettersContainer = document.createElement('span');
+  lettersContainer.className = 'letters-container';
+  lettersContainer.style.display = 'inline-block';
+
+  const headingLetterElements: HTMLElement[] = [];
+  letters.forEach((letter) => {
+    const letterSpan = document.createElement('span');
+    letterSpan.className = 'letter';
+    letterSpan.style.display = 'inline-block';
+    letterSpan.innerHTML = letter;
+    lettersContainer.appendChild(letterSpan);
+    headingLetterElements.push(letterSpan);
+  });
+
+  featuresHeading.appendChild(lettersContainer);
+
+  // Initial heading state
+  headingLetterElements.forEach((letter) => {
+    gsap.set(letter, {
+      opacity: 0,
+      y: 100,
+      rotationX: -90,
+    });
+  });
+
+  // Prepare intro text lines if present
+  const textLineElements = featuresText ? prepareTextLines(featuresText) : [];
+
+  // Prepare feature items if present
+  const featureItems =
+    featuresList && featuresList.children.length > 0
+      ? (Array.from(featuresList.children) as HTMLElement[])
+      : [];
+
+  featureItems.forEach((item) => {
+    gsap.set(item, {
+      opacity: 0,
+    });
+  });
+
+  ScrollTrigger.create({
+    trigger: sectionFeatures,
+    start: 'top 80%',
+    onEnter: () => {
+      const tl = gsap.timeline();
+
+      // 1. Heading letters
+      headingLetterElements.forEach((letter, index) => {
+        tl.to(
+          letter,
+          {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            duration: 0.4,
+            ease: 'back.out(1.7)',
+          },
+          index * 0.03
+        );
+      });
+
+      const headingDuration = headingLetterElements.length * 0.03 + 0.4;
+
+      // 2. Intro text lines
+      let textTotalDuration = 0;
+      if (textLineElements.length > 0) {
+        textLineElements.forEach((line, index) => {
+          const lineDelay = headingDuration + index * 0.4;
+          tl.to(
+            line,
+            {
+              clipPath: 'inset(0 0% 0 0)',
+              duration: 1.2,
+              ease: 'power2.out',
+            },
+            lineDelay
+          );
+          textTotalDuration = lineDelay + 1.2;
+        });
+      } else {
+        textTotalDuration = headingDuration;
+      }
+
+      // 3. Feature items (start slightly before the end of the intro text)
+      if (featureItems.length > 0) {
+        featureItems.forEach((item, index) => {
+          tl.to(
+            item,
+            {
+              opacity: 1,
+              duration: 0.6,
+              ease: 'power2.out',
+            },
+            // Start a bit before textTotalDuration for a snappier transition
+            textTotalDuration - 2 + index * 0.2
+          );
+        });
+      }
+    },
+    once: true,
+  });
+}
+
+//clip path text lines
 function prepareTextLines(element: HTMLElement): HTMLElement[] {
   // Sauvegarder le texte original et les styles
   const originalText = element.textContent || '';
@@ -236,10 +363,7 @@ function prepareTextLines(element: HTMLElement): HTMLElement[] {
   return lineElements;
 }
 
-/**
- * Anime le texte about_p ligne par ligne avec un effet de révélation
- * Utilise une approche native pour diviser le texte en lignes
- */
+// Reveals the about paragraph line by line and then fades in the about button.
 export function initAboutTextAnimation(): void {
   const aboutText = document.querySelector<HTMLElement>('.about_p');
 
@@ -297,12 +421,7 @@ export function initAboutTextAnimation(): void {
   });
 }
 
-/**
- * Fonction réutilisable pour animer un texte ligne par ligne avec clip-path
- */
-/**
- * Anime le texte features-txt ligne par ligne avec le même effet que about_p
- */
+// Reveals the features intro text line by line
 export function initFeaturesTextAnimation(): void {
   const featuresText = document.getElementById('features-txt');
 
@@ -336,10 +455,7 @@ export function initFeaturesTextAnimation(): void {
   });
 }
 
-/**
- * Applique l'animation "Moving Letters" à tous les h2 du site
- * Inspiré de https://tobiasahlin.com/moving-letters/#2
- */
+// Applies the "moving letters" effect to all h2 elements on the page.
 export function initMovingLettersAnimation(): void {
   const headings = document.querySelectorAll<HTMLElement>('h2');
 
@@ -416,10 +532,7 @@ export function initMovingLettersAnimation(): void {
   });
 }
 
-/**
- * Anime logo-h2 avec Moving Letters, puis initFeaturesAnimation, puis fadeIn logo-btn
- * Se déclenche quand section_logo entre dans le viewport
- */
+// Animates logo heading letters, features, then fades in the logo button in the logo section.
 export function initLogoSectionAnimation(): void {
   const sectionLogo = document.querySelector<HTMLElement>('.section_logo');
   const logoH2 = document.getElementById('logo-h2');
@@ -559,6 +672,219 @@ export function initLogoSectionAnimation(): void {
           h2Duration - 0.5 // Commence pendant l'animation du h2
         );
       }
+    },
+    once: true,
+  });
+}
+
+// Animates the HP gallery heading letters
+export function initHpGalleryHeadingAnimation(): void {
+  const sectionHpGallery = document.querySelector<HTMLElement>('.section_hp-galery');
+  const hpGalleryHeading = document.getElementById('hp-galery-heading');
+
+  if (!sectionHpGallery || !hpGalleryHeading) {
+    return;
+  }
+
+  const originalText = hpGalleryHeading.textContent || '';
+  if (!originalText.trim()) {
+    return;
+  }
+
+  // Diviser le texte en lettres (en gardant les espaces)
+  const letters = originalText.split('').map((char) => {
+    if (char === ' ') {
+      return '&nbsp;';
+    }
+    return char;
+  });
+
+  // Créer un wrapper pour les lettres
+  hpGalleryHeading.innerHTML = '';
+  const lettersContainer = document.createElement('span');
+  lettersContainer.className = 'letters-container';
+  lettersContainer.style.display = 'inline-block';
+
+  // Créer un span pour chaque lettre
+  const letterElements: HTMLElement[] = [];
+  letters.forEach((letter) => {
+    const letterSpan = document.createElement('span');
+    letterSpan.className = 'letter';
+    letterSpan.style.display = 'inline-block';
+    letterSpan.innerHTML = letter;
+    lettersContainer.appendChild(letterSpan);
+    letterElements.push(letterSpan);
+  });
+
+  hpGalleryHeading.appendChild(lettersContainer);
+
+  // État de départ : lettres masquées avec translation
+  letterElements.forEach((letter) => {
+    gsap.set(letter, {
+      opacity: 0,
+      y: 100,
+      rotationX: -90,
+    });
+  });
+
+  // Animation déclenchée à l'entrée de section_hp-galery dans le viewport
+  ScrollTrigger.create({
+    trigger: sectionHpGallery,
+    start: 'top 80%',
+    onEnter: () => {
+      const tl = gsap.timeline();
+
+      letterElements.forEach((letter, index) => {
+        tl.to(
+          letter,
+          {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            duration: 0.4,
+            ease: 'back.out(1.7)',
+          },
+          index * 0.03
+        );
+      });
+    },
+    once: true,
+  });
+}
+
+// Creates a 3x3 clipPath reveal effect on the landscape image
+export function initLandscapeImageMaskAnimation(): void {
+  const sectionLandscape = document.querySelector<HTMLElement>('.section_landscape');
+  const landscapeImg = document.getElementById('landscape-img') as HTMLImageElement | null;
+
+  if (!sectionLandscape || !landscapeImg) {
+    return;
+  }
+
+  const wrapper = landscapeImg.parentElement as HTMLElement | null;
+  if (!wrapper) {
+    return;
+  }
+
+  // Debug: confirm elements found
+  // eslint-disable-next-line no-console
+  console.log('[LandscapeMask] init with image:', landscapeImg.id, 'wrapper:', wrapper.className);
+
+  // Ensure wrapper can host overlay masks
+  if (!wrapper.style.position) {
+    wrapper.style.position = 'relative';
+  }
+  if (!wrapper.style.display) {
+    wrapper.style.display = 'grid';
+  }
+  if (!wrapper.style.overflow) {
+    wrapper.style.overflow = 'hidden';
+  }
+
+  // Hide the base image so the reveal effect is clearly visible
+  landscapeImg.style.opacity = '0';
+
+  // Clip path definitions (3x3 grid)
+  const initialClipPaths = [
+    'polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%)',
+    'polygon(33.33% 0%, 33.33% 0%, 33.33% 0%, 33.33% 0%)',
+    'polygon(66.66% 0%, 66.66% 0%, 66.66% 0%, 66.66% 0%)',
+    'polygon(0% 33.33%, 0% 33.33%, 0% 33.33%, 0% 33.33%)',
+    'polygon(33.33% 33.33%, 33.33% 33.33%, 33.33% 33.33%, 33.33% 33.33%)',
+    'polygon(66.66% 33.33%, 66.66% 33.33%, 66.66% 33.33%, 66.66% 33.33%)',
+    'polygon(0% 66.66%, 0% 66.66%, 0% 66.66%, 0% 66.66%)',
+    'polygon(33.33% 66.66%, 33.33% 66.66%, 33.33% 66.66%, 33.33% 66.66%)',
+    'polygon(66.66% 66.66%, 66.66% 66.66%, 66.66% 66.66%, 66.66% 66.66%)',
+  ];
+
+  const finalClipPaths = [
+    // ligne 1
+    'polygon(0.05% 0.05%, 33.28% 0.05%, 33.28% 33.28%, 0.05% 33.28%)',
+    'polygon(33.38% 0.05%, 66.61% 0.05%, 66.61% 33.28%, 33.38% 33.28%)',
+    'polygon(66.71% 0.05%, 99.95% 0.05%, 99.95% 33.28%, 66.71% 33.28%)',
+
+    // ligne 2
+    'polygon(0.05% 33.38%, 33.28% 33.38%, 33.28% 66.61%, 0.05% 66.61%)',
+    'polygon(33.38% 33.38%, 66.61% 33.38%, 66.61% 66.61%, 33.38% 66.61%)',
+    'polygon(66.71% 33.38%, 99.95% 33.38%, 99.95% 66.61%, 66.71% 66.61%)',
+
+    // ligne 3
+    'polygon(0.05% 66.71%, 33.28% 66.71%, 33.28% 99.95%, 0.05% 99.95%)',
+    'polygon(33.38% 66.71%, 66.61% 66.71%, 66.61% 99.95%, 33.38% 99.95%)',
+    'polygon(66.71% 66.71%, 99.95% 66.71%, 99.95% 99.95%, 66.71% 99.95%)',
+  ];
+
+  // Clean previous masks if any (in case of re-init)
+  wrapper.querySelectorAll('.landscape-mask').forEach((el) => el.remove());
+
+  const imgUrl = landscapeImg.src;
+  const computedImgStyle = window.getComputedStyle(landscapeImg);
+
+  // Create 9 mask tiles
+  for (let i = 0; i < 9; i += 1) {
+    const mask = document.createElement('div');
+    mask.classList.add('landscape-mask', `m-${i + 1}`);
+    mask.style.backgroundImage = `url(${imgUrl})`;
+    mask.style.backgroundSize = 'cover';
+    mask.style.backgroundPosition = 'center';
+    mask.style.borderRadius = computedImgStyle.borderRadius;
+    mask.style.gridArea = '1 / 1 / 2 / 2';
+    mask.style.width = '100%';
+    mask.style.height = '100%';
+    mask.style.maxHeight = '100%';
+    mask.style.zIndex = '2'; // Above the base image
+    wrapper.appendChild(mask);
+  }
+
+  const masks = Array.from(wrapper.querySelectorAll<HTMLElement>('.landscape-mask'));
+
+  // Debug: number of masks created
+  // eslint-disable-next-line no-console
+  console.log('[LandscapeMask] masks created:', masks.length);
+
+  // Set initial clipPath for each mask
+  masks.forEach((mask, index) => {
+    gsap.set(mask, {
+      clipPath: initialClipPaths[index],
+    });
+  });
+
+  // Animation order (like the example)
+  const animationOrder: string[][] = [
+    ['.m-1'],
+    ['.m-2', '.m-4'],
+    ['.m-3', '.m-5', '.m-7'],
+    ['.m-6', '.m-8'],
+    ['.m-9'],
+  ];
+
+  ScrollTrigger.create({
+    trigger: sectionLandscape,
+    start: 'top 40%',
+    onEnter: () => {
+      // eslint-disable-next-line no-console
+      console.log('[LandscapeMask] ScrollTrigger onEnter');
+      const tl = gsap.timeline();
+
+      animationOrder.forEach((targets, groupIndex) => {
+        const targetElements = targets.flatMap((cls) =>
+          Array.from(wrapper.querySelectorAll<HTMLElement>(cls))
+        );
+
+        tl.to(
+          targetElements,
+          {
+            clipPath: (_i, el) => {
+              const index = masks.indexOf(el as HTMLElement);
+              return finalClipPaths[index];
+            },
+            duration: 1,
+            ease: 'power4.out',
+            stagger: 0.1,
+          },
+          groupIndex * 0.125
+        );
+      });
     },
     once: true,
   });
