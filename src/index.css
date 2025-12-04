@@ -95,56 +95,58 @@ a[href] div[svg='component'] {
 }
 
 /*
-! Floating animation for decorative stars
+! Floating animation for decorative stars (desktop only)
 */
-.about_star-decorativ-bottom,
-.about_star-decorativ-top {
-  /* Scroll-driven animation for supported browsers */
-  animation: float-on-scroll linear;
-  animation-timeline: view();
-  animation-range: 20% 80%;
-}
+@media screen and (min-width: 992px) {
+  .about_star-decorativ-bottom,
+  .about_star-decorativ-top {
+    /* Scroll-driven animation for supported browsers */
+    animation: float-on-scroll linear;
+    animation-timeline: view();
+    animation-range: 20% 80%;
+  }
 
-/* Fallback for browsers without scroll-driven animation support */
-.about_star-decorativ-bottom.fallback,
-.about_star-decorativ-top.fallback {
-  animation: float-fallback 6s ease-in-out infinite;
-  /* Add delay to create more natural movement */
-}
+  /* Fallback for browsers without scroll-driven animation support */
+  .about_star-decorativ-bottom.fallback,
+  .about_star-decorativ-top.fallback {
+    animation: float-fallback 6s ease-in-out infinite;
+    /* Add delay to create more natural movement */
+  }
 
-.about_star-decorativ-top.fallback {
-  animation-delay: -2s;
-}
+  .about_star-decorativ-top.fallback {
+    animation-delay: -2s;
+  }
 
-@keyframes float-on-scroll {
-  0%,
-  100% {
-    transform: translateY(0px);
+  @keyframes float-on-scroll {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    25% {
+      transform: translateY(-50px);
+    }
+    50% {
+      transform: translateY(-100px);
+    }
+    75% {
+      transform: translateY(-50px);
+    }
   }
-  25% {
-    transform: translateY(-50px);
-  }
-  50% {
-    transform: translateY(-100px);
-  }
-  75% {
-    transform: translateY(-50px);
-  }
-}
 
-@keyframes float-fallback {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  25% {
-    transform: translateY(-50px);
-  }
-  50% {
-    transform: translateY(-100px);
-  }
-  75% {
-    transform: translateY(-50px);
+  @keyframes float-fallback {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    25% {
+      transform: translateY(-50px);
+    }
+    50% {
+      transform: translateY(-100px);
+    }
+    75% {
+      transform: translateY(-50px);
+    }
   }
 }
 
@@ -198,6 +200,15 @@ a[href] div[svg='component'] {
     .features_list-flex > *:nth-child(8) {
       animation-delay: 0.7s;
     }
+  }
+}
+
+/*
+! Modal scroll prevention (desktop only)
+*/
+@media screen and (min-width: 768px) {
+  .modal-open {
+    overflow: hidden;
   }
 }
 
