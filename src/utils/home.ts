@@ -6,7 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 /**
  * Fonction helper pour animer les features dans une timeline
  */
-function animateFeaturesInTimeline(timeline: gsap.core.Timeline): void {
+/*function animateFeaturesInTimeline(timeline: gsap.core.Timeline): void {
   const featuresList = document.querySelector<HTMLElement>('.features_list-flex');
 
   if (!featuresList) {
@@ -39,10 +39,10 @@ function animateFeaturesInTimeline(timeline: gsap.core.Timeline): void {
       index * 0.15 // Délai augmenté à 0.15s entre chaque item
     );
   });
-}
+}*/
 
 // Animates the features list items when the features section enters the viewport.
-export function initFeaturesAnimation(): void {
+/*export function initFeaturesAnimation(): void {
   const featuresContent = document.querySelector<HTMLElement>('.features_content');
   const featuresList = document.querySelector<HTMLElement>('.features_list-flex');
 
@@ -75,10 +75,10 @@ export function initFeaturesAnimation(): void {
     },
     once: true, // Ne s'exécute qu'une seule fois
   });
-}
+}*/
 
 // Animates the logo grid items row by row when the logo section enters the viewport.
-export function initLogoGridAnimation(): void {
+/*export function initLogoGridAnimation(): void {
   const sectionLogo = document.querySelector<HTMLElement>('.section_logo');
   const logoGrid = document.querySelector<HTMLElement>('.logo_grid');
 
@@ -155,10 +155,10 @@ export function initLogoGridAnimation(): void {
     },
     once: true, // Ne s'exécute qu'une seule fois
   });
-}
+}*/
 
 // Animates the features section: heading letters, intro text, then feature items.
-export function initFeaturesSectionAnimation(): void {
+/*export function initFeaturesSectionAnimation(): void {
   const sectionFeatures = document.querySelector<HTMLElement>('.section_features');
   const featuresHeading = document.getElementById('features-heading');
   const featuresText = document.getElementById('features-txt');
@@ -259,10 +259,10 @@ export function initFeaturesSectionAnimation(): void {
     },
     once: true,
   });
-}
+}*/
 
 // Splits block text into lines and wraps each line in a div with a clip-path for line-by-line reveal.
-function prepareTextLines(element: HTMLElement): HTMLElement[] {
+/*function prepareTextLines(element: HTMLElement): HTMLElement[] {
   // Use innerText so we get the same visible spaces/line breaks as the browser renders,
   // then normalise all whitespace (spaces, newlines, tabs, etc.) to a single space.
   const originalText = (element as HTMLElement).innerText || '';
@@ -339,10 +339,10 @@ function prepareTextLines(element: HTMLElement): HTMLElement[] {
   });
 
   return lineElements;
-}
+}*/
 
 // Splits a heading into word-wrapped animated letter spans so letters of a word never wrap onto a new line.
-function prepareHeadingLetters(element: HTMLElement): HTMLElement[] {
+/*function prepareHeadingLetters(element: HTMLElement): HTMLElement[] {
   const originalText = element.textContent || '';
   const trimmed = originalText.trim();
 
@@ -385,10 +385,10 @@ function prepareHeadingLetters(element: HTMLElement): HTMLElement[] {
   element.appendChild(lettersContainer);
 
   return letterElements;
-}
+}*/
 
 // Reveals the about paragraph line by line and then fades in the about button.
-export function initAboutTextAnimation(): void {
+/*export function initAboutTextAnimation(): void {
   const aboutText = document.querySelector<HTMLElement>('.about_p');
 
   if (!aboutText) {
@@ -443,10 +443,10 @@ export function initAboutTextAnimation(): void {
     },
     once: true,
   });
-}
+}*/
 
 // Reveals the features intro text line by line
-export function initFeaturesTextAnimation(): void {
+/*export function initFeaturesTextAnimation(): void {
   const featuresText = document.getElementById('features-txt');
 
   if (!featuresText) {
@@ -477,10 +477,10 @@ export function initFeaturesTextAnimation(): void {
     },
     once: true,
   });
-}
+}*/
 
 // Applies the "moving letters" effect to all h2 elements on the page.
-export function initMovingLettersAnimation(): void {
+/*export function initMovingLettersAnimation(): void {
   const headings = document.querySelectorAll<HTMLElement>('h2');
 
   if (headings.length === 0) {
@@ -526,10 +526,10 @@ export function initMovingLettersAnimation(): void {
       once: true,
     });
   });
-}
+}*/
 
 // Animates logo heading letters, features, then fades in the logo button in the logo section.
-export function initLogoSectionAnimation(): void {
+/*export function initLogoSectionAnimation(): void {
   const sectionLogo = document.querySelector<HTMLElement>('.section_logo');
   const logoH2 = document.getElementById('logo-h2');
   const logoBtn = document.getElementById('logo-btn');
@@ -644,10 +644,10 @@ export function initLogoSectionAnimation(): void {
     },
     once: true,
   });
-}
+}*/
 
 // Animates the HP gallery heading letters
-export function initHpGalleryHeadingAnimation(): void {
+/*export function initHpGalleryHeadingAnimation(): void {
   const sectionHpGallery = document.querySelector<HTMLElement>('.section_hp-galery');
   const hpGalleryHeading = document.getElementById('hp-galery-heading');
 
@@ -692,7 +692,7 @@ export function initHpGalleryHeadingAnimation(): void {
     },
     once: true,
   });
-}
+}*/
 
 // Creates a 3x3 clipPath reveal effect on the landscape image
 export function initLandscapeImageMaskAnimation(): void {
@@ -736,20 +736,20 @@ export function initLandscapeImageMaskAnimation(): void {
   ];
 
   const finalClipPaths = [
-    // ligne 1
-    'polygon(0.05% 0.05%, 33.28% 0.05%, 33.28% 33.28%, 0.05% 33.28%)',
-    'polygon(33.38% 0.05%, 66.61% 0.05%, 66.61% 33.28%, 33.38% 33.28%)',
-    'polygon(66.71% 0.05%, 99.95% 0.05%, 99.95% 33.28%, 66.71% 33.28%)',
+    // ligne 1 - sans espaces, masks qui se touchent
+    'polygon(0% 0%, 33.33% 0%, 33.33% 33.33%, 0% 33.33%)',
+    'polygon(33.33% 0%, 66.66% 0%, 66.66% 33.33%, 33.33% 33.33%)',
+    'polygon(66.66% 0%, 100% 0%, 100% 33.33%, 66.66% 33.33%)',
 
-    // ligne 2
-    'polygon(0.05% 33.38%, 33.28% 33.38%, 33.28% 66.61%, 0.05% 66.61%)',
-    'polygon(33.38% 33.38%, 66.61% 33.38%, 66.61% 66.61%, 33.38% 66.61%)',
-    'polygon(66.71% 33.38%, 99.95% 33.38%, 99.95% 66.61%, 66.71% 66.61%)',
+    // ligne 2 - sans espaces, masks qui se touchent
+    'polygon(0% 33.33%, 33.33% 33.33%, 33.33% 66.66%, 0% 66.66%)',
+    'polygon(33.33% 33.33%, 66.66% 33.33%, 66.66% 66.66%, 33.33% 66.66%)',
+    'polygon(66.66% 33.33%, 100% 33.33%, 100% 66.66%, 66.66% 66.66%)',
 
-    // ligne 3
-    'polygon(0.05% 66.71%, 33.28% 66.71%, 33.28% 99.95%, 0.05% 99.95%)',
-    'polygon(33.38% 66.71%, 66.61% 66.71%, 66.61% 99.95%, 33.38% 99.95%)',
-    'polygon(66.71% 66.71%, 99.95% 66.71%, 99.95% 99.95%, 66.71% 99.95%)',
+    // ligne 3 - sans espaces, masks qui se touchent
+    'polygon(0% 66.66%, 33.33% 66.66%, 33.33% 100%, 0% 100%)',
+    'polygon(33.33% 66.66%, 66.66% 66.66%, 66.66% 100%, 33.33% 100%)',
+    'polygon(66.66% 66.66%, 100% 66.66%, 100% 100%, 66.66% 100%)',
   ];
 
   // Clean previous masks if any (in case of re-init)

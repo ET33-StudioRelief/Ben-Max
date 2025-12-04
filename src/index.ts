@@ -3,16 +3,31 @@ import './index.css';
 import { initTestItemClick } from './utils/gallery';
 import { initFooterLogoAnimation, initNavbarScroll, svgComponent } from './utils/global';
 import {
-  initAboutTextAnimation,
+  /*initAboutTextAnimation,
   initFeaturesSectionAnimation,
   initFeaturesTextAnimation,
-  initHpGalleryHeadingAnimation,
+  initHpGalleryHeadingAnimation,*/
   initLandscapeImageMaskAnimation,
-  initLogoGridAnimation,
-  initLogoSectionAnimation,
+  /*initLogoGridAnimation,
+  initLogoSectionAnimation,*/
 } from './utils/home';
 import { initContactModal } from './utils/modal';
 import { initHpGallerySwiper } from './utils/swiper';
+
+// Initialize floating stars animation with fallback
+function initFloatingStars(): void {
+  const stars = document.querySelectorAll(
+    '.about_star-decorativ-bottom, .about_star-decorativ-top'
+  );
+
+  // Check if browser supports animation-timeline
+  const supportsAnimationTimeline = CSS.supports('animation-timeline: view()');
+
+  if (!supportsAnimationTimeline) {
+    // Add fallback class for infinite animation
+    stars.forEach((star) => star.classList.add('fallback'));
+  }
+}
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
@@ -21,12 +36,8 @@ window.Webflow.push(() => {
   svgComponent();
   initTestItemClick();
   initContactModal();
-  initLogoSectionAnimation();
-  initHpGalleryHeadingAnimation();
-  initFeaturesSectionAnimation();
-  initLogoGridAnimation();
   initLandscapeImageMaskAnimation();
-  initAboutTextAnimation();
-  initFeaturesTextAnimation();
+  initFloatingStars();
+
   initFooterLogoAnimation();
 });
