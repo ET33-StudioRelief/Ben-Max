@@ -65,7 +65,7 @@ export function initFooterLogoAnimation(): void {
   // Créer l'animation avec ScrollTrigger
   ScrollTrigger.create({
     trigger: footerComponent,
-    start: 'top 15%',
+    start: 'top 30%',
     onEnter: () => {
       gsap.to(footerLogo, { y: 0, duration: 0.8, ease: 'power2.out' });
     },
