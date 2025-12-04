@@ -17,11 +17,17 @@ export function initContactModal(): void {
   // Fonction pour ouvrir la modal
   const openModal = (): void => {
     modal.style.display = 'flex';
+    // Désactiver le scroll du body sur desktop (>767px)
+    if (window.innerWidth > 767) {
+      document.body.classList.add('modal-open');
+    }
   };
 
   // Fonction pour fermer la modal
   const closeModal = (): void => {
     modal.style.display = 'none';
+    // Réactiver le scroll du body
+    document.body.classList.remove('modal-open');
   };
 
   // Ajouter les écouteurs d'événements sur chaque bouton
