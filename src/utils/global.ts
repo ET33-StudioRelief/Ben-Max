@@ -144,7 +144,6 @@ export function initAboutStarsFloating(): void {
         end: 'bottom top',
         scrub: true,
         invalidateOnRefresh: true,
-        markers: true,
       },
     });
   }
