@@ -1,7 +1,13 @@
 import './index.css';
 
 import { initTestItemClick } from './utils/gallery';
-import { initFooterLogoAnimation, initNavbarScroll, svgComponent } from './utils/global';
+import {
+  initAboutStarsFloating,
+  initFooterLogoAnimation,
+  initNavbarScroll,
+  initRevealUpScroll,
+  svgComponent,
+} from './utils/global';
 import {
   /*initAboutTextAnimation,
   initFeaturesSectionAnimation,
@@ -38,6 +44,8 @@ window.Webflow.push(() => {
   initContactModal();
   initLandscapeImageMaskAnimation();
   initFloatingStars();
+  initRevealUpScroll();
+  initAboutStarsFloating();
 
   initFooterLogoAnimation();
 });
