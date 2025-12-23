@@ -67,9 +67,9 @@ a[href] div[svg='component'] {
 
 /*
 ! Landscape section
-*/
+
 .landscape_img {
-  display: none; /* on ne l’affiche plus, elle ne sert que de source JS */
+  display: none;
 }
 .landscape_content {
   position: relative;
@@ -78,8 +78,8 @@ a[href] div[svg='component'] {
 }
 .landscape-mask {
   position: absolute;
-  inset: 0; /* top:0; right:0; bottom:0; left:0 */
-}
+  inset: 0;
+}*/
 
 /*
 ! Modal scroll prevention (desktop only)
