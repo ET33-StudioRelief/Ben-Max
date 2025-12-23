@@ -695,7 +695,7 @@ gsap.registerPlugin(ScrollTrigger);
 }*/
 
 // Creates a 3x3 clipPath reveal effect on the landscape image
-export function initLandscapeImageMaskAnimation(): void {
+/*export function initLandscapeImageMaskAnimation(): void {
   const sectionLandscape = document.querySelector<HTMLElement>('.section_landscape');
   const landscapeImg = document.getElementById('landscape-img') as HTMLImageElement | null;
 
@@ -820,4 +820,4 @@ export function initLandscapeImageMaskAnimation(): void {
     },
     once: true,
   });
-}
+}*/

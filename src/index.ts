@@ -8,15 +8,14 @@ import {
   initRevealUpScroll,
   svgComponent,
 } from './utils/global';
-import {
-  /*initAboutTextAnimation,
+import {} from /*initAboutTextAnimation,
   initFeaturesSectionAnimation,
   initFeaturesTextAnimation,
   initHpGalleryHeadingAnimation,*/
-  initLandscapeImageMaskAnimation,
-  /*initLogoGridAnimation,
+/*initLandscapeImageMaskAnimation,*/
+/*initLogoGridAnimation,
   initLogoSectionAnimation,*/
-} from './utils/home';
+'./utils/home';
 import { initContactModal } from './utils/modal';
 import { initHpGallerySwiper } from './utils/swiper';
 
@@ -42,7 +41,7 @@ window.Webflow.push(() => {
   svgComponent();
   initTestItemClick();
   initContactModal();
-  initLandscapeImageMaskAnimation();
+  /*initLandscapeImageMaskAnimation();*/
   initFloatingStars();
   initRevealUpScroll();
   initAboutStarsFloating();
